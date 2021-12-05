@@ -13,7 +13,7 @@ from collections import deque
 
 
 GAME = 'Space' # the name of the game being played for log files
-ACTIONS = 3 # number of valid actions
+ACTIONS = 4 # number of valid actions
 GAMMA = 0.99 # decay rate of past observations
 OBSERVE = 100. # timesteps to observe before training
 EXPLORE = 2000000. # frames over which to anneal epsilon

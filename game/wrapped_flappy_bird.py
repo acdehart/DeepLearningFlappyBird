@@ -23,7 +23,6 @@ PLAYER_HEIGHT = IMAGES['player'][0].get_height()
 PIPE_WIDTH = IMAGES['pipe'][0].get_width()
 PIPE_HEIGHT = IMAGES['pipe'][0].get_height()
 BACKGROUND_WIDTH = IMAGES['background'].get_width()
-PLAYER_COLOR_OFFSET = True
 PLAYER_INDEX_GEN = cycle([0,
                           1,
                           2,
@@ -32,6 +31,7 @@ PLAYER_INDEX_GEN = cycle([0,
 
 class GameState:
     def __init__(self):
+        self.player_color_offset = False
         self.score = self.playerIndex = self.loopIter = 0
         self.playerx = int(SCREENWIDTH * -0.2)
         self.playery = int((SCREENHEIGHT - PLAYER_HEIGHT) / 2 )
@@ -68,13 +68,14 @@ class GameState:
 
         # input_actions[0] == 1: do nothing
         # input_actions[1] == x: orb acceleration direction and magnitude [-1, 1]
-        print(f"input actions : {input_actions}")
         if input_actions[0] == 0:  # Brakes off
             # if self.playery > -2 * PLAYER_HEIGHT:
-            print("FLAP")
             self.playerVelY = self.playerFlapAcc * input_actions[1]
             self.playerVelX = self.playerFlapAcc * input_actions[2]
-            self
+            if input_actions[3] < 0:
+                self.player_color_offset = True
+            else:
+                self.player_color_offset = False
             self.playerFlapped = True
             #SOUNDS['wing'].play()
         else:
@@ -134,7 +135,7 @@ class GameState:
             self.lowerPipes.pop(0)
 
         # check if crash here
-        isCrash= checkCrash({'x': self.playerx, 'y': self.playery,
+        isCrash= self.checkCrash({'x': self.playerx, 'y': self.playery,
                              'index': self.playerIndex},
                             self.upperPipes, self.lowerPipes)
         if isCrash:
@@ -154,7 +155,8 @@ class GameState:
         SCREEN.blit(IMAGES['base'], (self.basex, BASEY))
         # print score so player overlaps the score
         showScore(self.score)
-        SCREEN.blit(IMAGES['player'][self.playerIndex],
+        offset = self.get_frame_offset()
+        SCREEN.blit(IMAGES['player'][self.playerIndex+offset],
                     (self.playerx, self.playery))
 
         image_data = pygame.surfarray.array3d(pygame.display.get_surface())
@@ -162,6 +164,12 @@ class GameState:
         FPSCLOCK.tick(FPS)
         #print self.upperPipes[0]['y'] + PIPE_HEIGHT - int(BASEY * 0.2)
         return image_data, reward, terminal
+
+    def get_frame_offset(self):
+        offset = 0
+        if self.player_color_offset:
+            offset = 3
+        return offset
 
     def drag_linear(self):
         coef = 0.01
@@ -175,6 +183,43 @@ class GameState:
         self.playerVelY += (1 / 2) * density * area * drag_coef * self.playerVelY ** 2
         self.playerVelX -= (1 / 2) * density * area * drag_coef * self.playerVelX ** 2
 
+    def checkCrash(self, player, upperPipes, lowerPipes):
+        """returns True if player collders with base or pipes."""
+
+        pi = player['index']
+
+        if self.player_color_offset:
+            pi += 3
+
+        player['w'] = IMAGES['player'][pi].get_width()
+        player['h'] = IMAGES['player'][pi].get_height()
+
+        # if player crashes into ground
+        if player['y'] + player['h'] >= BASEY - 1:
+            return True
+        else:
+
+            playerRect = pygame.Rect(player['x'], player['y'],
+                                     player['w'], player['h'])
+
+            for uPipe, lPipe in zip(upperPipes, lowerPipes):
+                # upper and lower pipe rects
+                uPipeRect = pygame.Rect(uPipe['x'], uPipe['y'], PIPE_WIDTH, PIPE_HEIGHT)
+                lPipeRect = pygame.Rect(lPipe['x'], lPipe['y'], PIPE_WIDTH, PIPE_HEIGHT)
+
+                # player and upper/lower pipe hitmasks
+                pHitMask = HITMASKS['player'][pi]
+                uHitmask = HITMASKS['pipe'][0]
+                lHitmask = HITMASKS['pipe'][1]
+
+                # if bird collided with upipe or lpipe
+                uCollide = pixelCollision(playerRect, uPipeRect, pHitMask, uHitmask)
+                lCollide = pixelCollision(playerRect, lPipeRect, pHitMask, lHitmask)
+
+                if uCollide or lCollide:
+                    return True
+
+        return False
 
 def getRandomPipe():
     """returns a randomly generated pipe"""
@@ -208,44 +253,7 @@ def showScore(score):
         Xoffset += IMAGES['numbers'][digit].get_width()
 
 
-def checkCrash(player, upperPipes, lowerPipes):
-    """returns True if player collders with base or pipes."""
 
-    pi = player['index']
-
-    if PLAYER_COLOR_OFFSET:
-        pi += 3
-
-    player['w'] = IMAGES['player'][pi].get_width()
-    player['h'] = IMAGES['player'][pi].get_height()
-
-    # if player crashes into ground
-    if player['y'] + player['h'] >= BASEY - 1:
-        return True
-    else:
-
-        playerRect = pygame.Rect(player['x'], player['y'],
-                      player['w'], player['h'])
-
-        for uPipe, lPipe in zip(upperPipes, lowerPipes):
-            # upper and lower pipe rects
-            uPipeRect = pygame.Rect(uPipe['x'], uPipe['y'], PIPE_WIDTH, PIPE_HEIGHT)
-            lPipeRect = pygame.Rect(lPipe['x'], lPipe['y'], PIPE_WIDTH, PIPE_HEIGHT)
-
-            # player and upper/lower pipe hitmasks
-            print(f"PI: {pi}")
-            pHitMask = HITMASKS['player'][pi]
-            uHitmask = HITMASKS['pipe'][0]
-            lHitmask = HITMASKS['pipe'][1]
-
-            # if bird collided with upipe or lpipe
-            uCollide = pixelCollision(playerRect, uPipeRect, pHitMask, uHitmask)
-            lCollide = pixelCollision(playerRect, lPipeRect, pHitMask, lHitmask)
-
-            if uCollide or lCollide:
-                return True
-
-    return False
 
 
 def pixelCollision(rect1, rect2, hitmask1, hitmask2):

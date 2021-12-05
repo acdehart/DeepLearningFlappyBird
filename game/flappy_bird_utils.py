@@ -58,9 +58,9 @@ def load():
 
     # select random player sprites
     IMAGES['player'] = (
-        pygame.image.load(PLAYER_PATH[0]).convert_alpha(),
+        pygame.image.load(PLAYER_PATH[1]).convert_alpha(),
         pygame.image.load(PLAYER_PATH[2]).convert_alpha(),
-        pygame.image.load(PLAYER_PATH[4]).convert_alpha(),
+        pygame.image.load(PLAYER_PATH[3]).convert_alpha(),
     )
 
     # select random pipe sprites

@@ -15,7 +15,7 @@ SCREEN = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
 pygame.display.set_caption('')
 
 IMAGES, SOUNDS, HITMASKS = flappy_bird_utils.load()
-PIPEGAPSIZE = 150 # gap between upper and lower part of pipe
+PIPEGAPSIZE = 120  # gap between upper and lower part of pipe
 BASEY = SCREENHEIGHT
 
 PLAYER_WIDTH = IMAGES['player'][0].get_width()
@@ -48,6 +48,7 @@ class GameState:
 
         # player velocity, max velocity, downward accleration, accleration on flap
         self.pipeVelX = -4
+        self.playerVelX    =  0
         self.playerVelY    =  0    # player's velocity along Y, default same as playerFlapped
         self.playerMaxVelY =  10   # max vel along Y, max descend speed
         self.playerMinVelY =  -10   # min vel along Y, max ascend speed
@@ -64,12 +65,19 @@ class GameState:
 
         # input_actions[0] == 1: do nothing
         # input_actions[1] == x: orb acceleration direction and magnitude [-1, 1]
-        # print(f"input actions : {input_actions}")
-        if input_actions[1] != 0:
+        print(f"input actions : {input_actions}")
+        if input_actions[0] == 0:  # Brakes off
             # if self.playery > -2 * PLAYER_HEIGHT:
             self.playerVelY = self.playerFlapAcc * input_actions[1]
+            self.playerVelX = self.playerFlapAcc * input_actions[2]
             self.playerFlapped = True
             #SOUNDS['wing'].play()
+
+        # else:
+        #     self.playerVelY = 0
+        #     self.playerAccY = 0
+        #     self.playerVelX = 0
+        #     self.playerVelX = 0
 
         # check for score
         playerMidPos = self.playerx + PLAYER_WIDTH / 2
@@ -87,15 +95,24 @@ class GameState:
         self.basex = -((-self.basex + 100) % self.baseShift)
 
         # player's movement
-        if self.playerVelY < self.playerMaxVelY and not self.playerFlapped:
-            # self.playerVelY += self.playerAccY
-            # print(f"Acceleration {acceleration} | pipe1 {self.upperPipes[0]['y']} | pipe2 {self.lowerPipes[0]['y']} | burb {self.playery}\n")
-            self.playerVelY += self.playerFlapAcc
+        if self.playerFlapped:
+            if self.playerVelY < self.playerMaxVelY:
+                pass
+                # self.playerVelY += self.playerAccY
+                # print(f"Acceleration {acceleration} | pipe1 {self.upperPipes[0]['y']} | pipe2 {self.lowerPipes[0]['y']} | burb {self.playery}\n")
+                # self.playerVelY += self.playerFlapAcc
+                # self.playerVelX += self.playerFlapAcc
+
         if self.playerFlapped:
             self.playerFlapped = False
         self.playery += min(self.playerVelY, BASEY - self.playery - PLAYER_HEIGHT)
+        self.playerx += min(self.playerVelX, SCREENWIDTH - self.playerx - PLAYER_WIDTH)
         if self.playery < 0:
             self.playery = 0
+        if self.playerx < -50:
+            self.playerx = -50
+        if self.playerx > SCREENWIDTH:
+            self.playerx = SCREENWIDTH
 
         # move pipes to left
         for uPipe, lPipe in zip(self.upperPipes, self.lowerPipes):

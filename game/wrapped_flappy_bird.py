@@ -9,7 +9,7 @@ from itertools import cycle
 
 FPS = 30
 SCREENWIDTH  = 288
-SCREENHEIGHT = 512
+SCREENHEIGHT = 420
 
 pygame.init()
 FPSCLOCK = pygame.time.Clock()
@@ -17,7 +17,7 @@ SCREEN = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
 pygame.display.set_caption('Flappy Bird')
 
 IMAGES, SOUNDS, HITMASKS = flappy_bird_utils.load()
-PIPEGAPSIZE = 100 # gap between upper and lower part of pipe
+PIPEGAPSIZE = 150 # gap between upper and lower part of pipe
 BASEY = SCREENHEIGHT
 
 PLAYER_WIDTH = IMAGES['player'][0].get_width()
@@ -60,12 +60,13 @@ class GameState:
     def frame_step(self, input_actions):
         pygame.event.pump()
 
-        reward = 0.1
+        # print(f"***Pipe {PIPE_HEIGHT}, player {self.playery}, dif = {PIPE_HEIGHT-self.playery}")
+        reward = 0.1/abs(PIPE_HEIGHT-self.playery)
         terminal = False
 
         # input_actions[0] == 1: do nothing
         # input_actions[1] == x: orb acceleration direction and magnitude [-1, 1]
-        print(f"input actions : {input_actions}")
+        # print(f"input actions : {input_actions}")
         if input_actions[1] != 0:
             # if self.playery > -2 * PLAYER_HEIGHT:
             self.playerVelY = self.playerFlapAcc * input_actions[1]

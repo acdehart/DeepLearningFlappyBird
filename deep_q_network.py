@@ -148,7 +148,7 @@ def trainNetwork(s, readout, h_fc1, sess):
         else:
             a_t[0] = 1  # do nothing
 
-        print(f"Action: {a_t}")
+        # print(f"Action: {a_t}")
         # scale down epsilon
         if epsilon > FINAL_EPSILON and t > OBSERVE:
             epsilon -= (INITIAL_EPSILON - FINAL_EPSILON) / EXPLORE
@@ -211,7 +211,7 @@ def trainNetwork(s, readout, h_fc1, sess):
         else:
             state = "train"
 
-        print("TIMESTEP", t, "/ STATE", state, \
+        print("TIMESTEP", t, "/ BATCH", minibatch, "/ STATE", state, \
             "/ EPSILON", epsilon, "/ ACTION", action_index, "/ REWARD", r_t, \
             "/ Q_MAX %e" % np.max(readout_t))
         # write info to files

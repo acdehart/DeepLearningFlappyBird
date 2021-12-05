@@ -23,8 +23,11 @@ PLAYER_HEIGHT = IMAGES['player'][0].get_height()
 PIPE_WIDTH = IMAGES['pipe'][0].get_width()
 PIPE_HEIGHT = IMAGES['pipe'][0].get_height()
 BACKGROUND_WIDTH = IMAGES['background'].get_width()
-
-PLAYER_INDEX_GEN = cycle([0, 1, 2, 1])
+PLAYER_COLOR_OFFSET = True
+PLAYER_INDEX_GEN = cycle([0,
+                          1,
+                          2,
+                          1])
 
 
 class GameState:
@@ -71,15 +74,13 @@ class GameState:
             print("FLAP")
             self.playerVelY = self.playerFlapAcc * input_actions[1]
             self.playerVelX = self.playerFlapAcc * input_actions[2]
+            self
             self.playerFlapped = True
             #SOUNDS['wing'].play()
         else:
             # DRAG
-            density = .000001
-            area = 1
-            drag_coef = 1
-            self.playerVelY += (1/2)*density*area*drag_coef*self.playerVelY**2
-            self.playerVelX -= (1/2)*density*area*drag_coef*self.playerVelX**2
+            self.drag_linear()
+            # self.drag_quadratic()
 
         # check for score
         playerMidPos = self.playerx + PLAYER_WIDTH / 2
@@ -162,6 +163,18 @@ class GameState:
         #print self.upperPipes[0]['y'] + PIPE_HEIGHT - int(BASEY * 0.2)
         return image_data, reward, terminal
 
+    def drag_linear(self):
+        coef = 0.01
+        self.playerVelY += -coef*self.playerVelY
+        self.playerVelX -= -coef*self.playerVelX
+
+    def drag_quadratic(self):
+        density = .000001
+        area = 1
+        drag_coef = 1
+        self.playerVelY += (1 / 2) * density * area * drag_coef * self.playerVelY ** 2
+        self.playerVelX -= (1 / 2) * density * area * drag_coef * self.playerVelX ** 2
+
 
 def getRandomPipe():
     """returns a randomly generated pipe"""
@@ -197,9 +210,14 @@ def showScore(score):
 
 def checkCrash(player, upperPipes, lowerPipes):
     """returns True if player collders with base or pipes."""
+
     pi = player['index']
-    player['w'] = IMAGES['player'][0].get_width()
-    player['h'] = IMAGES['player'][0].get_height()
+
+    if PLAYER_COLOR_OFFSET:
+        pi += 3
+
+    player['w'] = IMAGES['player'][pi].get_width()
+    player['h'] = IMAGES['player'][pi].get_height()
 
     # if player crashes into ground
     if player['y'] + player['h'] >= BASEY - 1:
@@ -215,6 +233,7 @@ def checkCrash(player, upperPipes, lowerPipes):
             lPipeRect = pygame.Rect(lPipe['x'], lPipe['y'], PIPE_WIDTH, PIPE_HEIGHT)
 
             # player and upper/lower pipe hitmasks
+            print(f"PI: {pi}")
             pHitMask = HITMASKS['player'][pi]
             uHitmask = HITMASKS['pipe'][0]
             lHitmask = HITMASKS['pipe'][1]

@@ -11,8 +11,12 @@ def load():
             'assets/sprites/ball/1.png',
             'assets/sprites/ball/2.png',
             'assets/sprites/ball/3.png',
-            'assets/sprites/ball/4.png',
-            'assets/sprites/ball/5.png',
+            'assets/sprites/ball_blue/1.png',
+            'assets/sprites/ball_blue/2.png',
+            'assets/sprites/ball_blue/3.png'
+            # 'assets/sprites/ball_pink/1.png',
+            # 'assets/sprites/ball_pink/2.png',
+            # 'assets/sprites/ball_pink/3.png',
     )
 
     # path of background
@@ -58,9 +62,12 @@ def load():
 
     # select random player sprites
     IMAGES['player'] = (
+        pygame.image.load(PLAYER_PATH[0]).convert_alpha(),
         pygame.image.load(PLAYER_PATH[1]).convert_alpha(),
         pygame.image.load(PLAYER_PATH[2]).convert_alpha(),
         pygame.image.load(PLAYER_PATH[3]).convert_alpha(),
+        pygame.image.load(PLAYER_PATH[4]).convert_alpha(),
+        pygame.image.load(PLAYER_PATH[5]).convert_alpha(),
     )
 
     # select random pipe sprites
@@ -81,6 +88,9 @@ def load():
         getHitmask(IMAGES['player'][0]),
         getHitmask(IMAGES['player'][1]),
         getHitmask(IMAGES['player'][2]),
+        getHitmask(IMAGES['player'][3]),
+        getHitmask(IMAGES['player'][4]),
+        getHitmask(IMAGES['player'][5])
     )
 
     return IMAGES, SOUNDS, HITMASKS

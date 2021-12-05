@@ -1,3 +1,6 @@
 # ignore all pyc files.
 *.pyc
 
+/saved_networks
+/logs_space
+/logs_bird

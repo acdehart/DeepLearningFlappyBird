@@ -1,10 +1,6 @@
-import numpy as np
-import sys
 import random
 import pygame
 import flappy_bird_utils
-import pygame.surfarray as surfarray
-from pygame.locals import *
 from itertools import cycle
 
 FPS = 30
@@ -14,10 +10,10 @@ SCREENHEIGHT = 420
 pygame.init()
 FPSCLOCK = pygame.time.Clock()
 SCREEN = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
-pygame.display.set_caption('Flappy Bird')
+pygame.display.set_caption('')
 
 IMAGES, SOUNDS, HITMASKS = flappy_bird_utils.load()
-PIPEGAPSIZE = 150 # gap between upper and lower part of pipe
+PIPEGAPSIZE = 200 # gap between upper and lower part of pipe
 BASEY = SCREENHEIGHT
 
 PLAYER_WIDTH = IMAGES['player'][0].get_width()
@@ -60,7 +56,7 @@ class GameState:
     def frame_step(self, input_actions):
         pygame.event.pump()
 
-        print(f"***Pipe {SCREENHEIGHT}, player {self.playery}, dif = {PIPE_HEIGHT-self.playery}")
+        # print(f"***Pipe {SCREENHEIGHT}, player {self.playery}, dif = {PIPE_HEIGHT-self.playery}")
         reward = 0.1/abs(-SCREENHEIGHT/2-self.playery)
         terminal = False
 
@@ -165,7 +161,7 @@ def getRandomPipe():
 def showScore(score):
     """displays score in center of screen"""
     scoreDigits = [int(x) for x in list(str(score))]
-    totalWidth = 0 # total width of all numbers to be printed
+    totalWidth = 0  # total width of all numbers to be printed
 
     for digit in scoreDigits:
         totalWidth += IMAGES['numbers'][digit].get_width()

@@ -19,7 +19,8 @@ def load():
     BACKGROUND_PATH = 'assets/sprites/background-black.png'
 
     # path of pipe
-    PIPE_PATH = 'assets/sprites/pipe-green.png'
+    # PIPE_PATH = 'assets/sprites/asteroid_big.png'
+    PIPE_PATH = 'assets/sprites/asteroid.png'
 
     IMAGES, SOUNDS, HITMASKS = {}, {}, {}
 

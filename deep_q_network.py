@@ -12,10 +12,10 @@ import numpy as np
 from collections import deque
 
 
-GAME = 'bird' # the name of the game being played for log files
+GAME = 'Space' # the name of the game being played for log files
 ACTIONS = 2 # number of valid actions
 GAMMA = 0.99 # decay rate of past observations
-OBSERVE = 1000. # timesteps to observe before training
+OBSERVE = 100. # timesteps to observe before training
 EXPLORE = 2000000. # frames over which to anneal epsilon
 FINAL_EPSILON = 0.0001 # final value of epsilon
 INITIAL_EPSILON = 0.1 # starting value of epsilon
@@ -114,11 +114,11 @@ def trainNetwork(s, readout, h_fc1, sess):
     saver = tf.compat.v1.train.Saver()
     sess.run(tf.compat.v1.initialize_all_variables())
     checkpoint = tf.train.get_checkpoint_state("saved_networks")
-    # if checkpoint and checkpoint.model_checkpoint_path:
-    #     saver.restore(sess, checkpoint.model_checkpoint_path)
-    #     print("Successfully loaded:", checkpoint.model_checkpoint_path)
-    # else:
-    #     print("Could not find old network weights")
+    if checkpoint and checkpoint.model_checkpoint_path:
+        saver.restore(sess, checkpoint.model_checkpoint_path)
+        print("Successfully loaded:", checkpoint.model_checkpoint_path)
+    else:
+        print("Could not find old network weights")
 
     # start training
     epsilon = INITIAL_EPSILON
@@ -132,7 +132,7 @@ def trainNetwork(s, readout, h_fc1, sess):
             if random.random() <= epsilon:
                 print("----------Random Action----------")
                 action_index = random.randrange(ACTIONS)
-                a_t[random.randrange(ACTIONS)] = 1
+                a_t[random.randrange(ACTIONS)] = random.random()*2-1
             else:
                 if readout_t[0] < 0:
                     a_t[0] = 0
@@ -211,16 +211,10 @@ def trainNetwork(s, readout, h_fc1, sess):
         else:
             state = "train"
 
-        print("TIMESTEP", t, "/ STATE", state, \
-            "/ EPSILON", epsilon, "/ ACTION", action_index, "/ REWARD", r_t, \
-            "/ Q_MAX %e" % np.max(readout_t))
-        # write info to files
-        '''
-        if t % 10000 <= 100:
-            a_file.write(",".join([str(x) for x in readout_t]) + '\n')
-            h_file.write(",".join([str(x) for x in h_fc1.eval(feed_dict={s:[s_t]})[0]]) + '\n')
-            cv2.imwrite("logs_tetris/frame" + str(t) + ".png", x_t1)
-        '''
+        print("TIMESTEP", t, "/ STATE", state,
+              "/ EPSILON", epsilon, "/ ACTION", action_index, "/ REWARD", r_t,
+              "/ Q_MAX %e" % np.max(readout_t))
+
 
 def playGame():
     sess = tf.compat.v1.InteractiveSession()

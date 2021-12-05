@@ -60,8 +60,8 @@ class GameState:
     def frame_step(self, input_actions):
         pygame.event.pump()
 
-        # print(f"***Pipe {PIPE_HEIGHT}, player {self.playery}, dif = {PIPE_HEIGHT-self.playery}")
-        reward = 0.1/abs(PIPE_HEIGHT-self.playery)
+        print(f"***Pipe {SCREENHEIGHT}, player {self.playery}, dif = {PIPE_HEIGHT-self.playery}")
+        reward = 0.1/abs(-SCREENHEIGHT/2-self.playery)
         terminal = False
 
         # input_actions[0] == 1: do nothing

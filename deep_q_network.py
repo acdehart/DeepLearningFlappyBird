@@ -211,7 +211,7 @@ def trainNetwork(s, readout, h_fc1, sess):
         else:
             state = "train"
 
-        print("TIMESTEP", t, "/ BATCH", minibatch, "/ STATE", state, \
+        print("TIMESTEP", t, "/ STATE", state, \
             "/ EPSILON", epsilon, "/ ACTION", action_index, "/ REWARD", r_t, \
             "/ Q_MAX %e" % np.max(readout_t))
         # write info to files

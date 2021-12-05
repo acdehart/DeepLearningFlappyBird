@@ -135,13 +135,15 @@ def train_loop(D, a, epsilon, game_state, readout, s, s_t, saver, sess, t, train
             action_index = random.randrange(ACTIONS)
             a_t[random.randrange(ACTIONS)] = random.random() * 2 - 1
         else:
-            if readout_t[0] < 0:
+            bias = -.1
+            if readout_t[0] < bias:
                 a_t[0] = 0
+                for i in range(0, len(a_t)-1):
+                    a_t[i+1] = readout_t[i+1] * 100 - bias
+
             else:
-                a_t[0] = 1
-            if a_t[0] == 0:
-                a_t[1] = readout_t[1] * 100
-    # print(f"State: {s} | Readout: {readout_t}")
+                a_t[0] = 1 # BREAKS
+            print(f"State: {a_t} | Readout: {readout_t}")
     #         action_index = np.argmax(readout_t)
     # a_t[action_index] = 1
     # if action_index == 1:

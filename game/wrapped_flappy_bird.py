@@ -68,16 +68,18 @@ class GameState:
         print(f"input actions : {input_actions}")
         if input_actions[0] == 0:  # Brakes off
             # if self.playery > -2 * PLAYER_HEIGHT:
+            print("FLAP")
             self.playerVelY = self.playerFlapAcc * input_actions[1]
             self.playerVelX = self.playerFlapAcc * input_actions[2]
             self.playerFlapped = True
             #SOUNDS['wing'].play()
-
-        # else:
-        #     self.playerVelY = 0
-        #     self.playerAccY = 0
-        #     self.playerVelX = 0
-        #     self.playerVelX = 0
+        else:
+            # DRAG
+            density = .000001
+            area = 1
+            drag_coef = 1
+            self.playerVelY += (1/2)*density*area*drag_coef*self.playerVelY**2
+            self.playerVelX -= (1/2)*density*area*drag_coef*self.playerVelX**2
 
         # check for score
         playerMidPos = self.playerx + PLAYER_WIDTH / 2

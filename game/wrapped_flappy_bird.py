@@ -7,13 +7,15 @@ FPS = 30
 SCREENWIDTH  = 288
 SCREENHEIGHT = 420
 
+VOLUME = 0.02
+
 pygame.init()
 FPSCLOCK = pygame.time.Clock()
 SCREEN = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
 pygame.display.set_caption('')
 
 IMAGES, SOUNDS, HITMASKS = flappy_bird_utils.load()
-PIPEGAPSIZE = 200 # gap between upper and lower part of pipe
+PIPEGAPSIZE = 150 # gap between upper and lower part of pipe
 BASEY = SCREENHEIGHT
 
 PLAYER_WIDTH = IMAGES['player'][0].get_width()
@@ -28,7 +30,7 @@ PLAYER_INDEX_GEN = cycle([0, 1, 2, 1])
 class GameState:
     def __init__(self):
         self.score = self.playerIndex = self.loopIter = 0
-        self.playerx = int(SCREENWIDTH * 0.2)
+        self.playerx = int(SCREENWIDTH * 0)
         self.playery = int((SCREENHEIGHT - PLAYER_HEIGHT) / 2 )
         self.basex = 0
         self.baseShift = IMAGES['base'].get_width() - BACKGROUND_WIDTH
@@ -75,7 +77,7 @@ class GameState:
             pipeMidPos = pipe['x'] + PIPE_WIDTH / 2
             if pipeMidPos <= playerMidPos < pipeMidPos + 4:
                 self.score += 1
-                #SOUNDS['point'].play()
+                SOUNDS['point'].play().set_volume(VOLUME)
                 reward = 1
 
         # playerIndex basex change
@@ -116,8 +118,8 @@ class GameState:
                              'index': self.playerIndex},
                             self.upperPipes, self.lowerPipes)
         if isCrash:
-            #SOUNDS['hit'].play()
-            #SOUNDS['die'].play()
+            SOUNDS['hit'].play().set_volume(VOLUME*2)
+            # SOUNDS['die'].play().set_volume(VOLUME)
             terminal = True
             self.__init__()
             reward = -1
@@ -131,7 +133,7 @@ class GameState:
 
         SCREEN.blit(IMAGES['base'], (self.basex, BASEY))
         # print score so player overlaps the score
-        # showScore(self.score)
+        showScore(self.score)
         SCREEN.blit(IMAGES['player'][self.playerIndex],
                     (self.playerx, self.playery))
 
@@ -166,10 +168,11 @@ def showScore(score):
     for digit in scoreDigits:
         totalWidth += IMAGES['numbers'][digit].get_width()
 
-    Xoffset = (SCREENWIDTH - totalWidth) / 2
+    # Xoffset = (SCREENWIDTH - totalWidth) / 2
+    Xoffset = 10
 
     for digit in scoreDigits:
-        SCREEN.blit(IMAGES['numbers'][digit], (Xoffset, SCREENHEIGHT * 0.1))
+        SCREEN.blit(IMAGES['numbers'][digit], (Xoffset, SCREENHEIGHT * 0.02))
         Xoffset += IMAGES['numbers'][digit].get_width()
 
 

@@ -8,7 +8,6 @@ def load():
     #         'assets/sprites/redbird-downflap.png'
     # )
     PLAYER_PATH = (
-            'assets/sprites/ball/1.png',
             'assets/sprites/ball/2.png',
             'assets/sprites/ball/3.png',
             'assets/sprites/ball/4.png',
@@ -48,7 +47,7 @@ def load():
         soundExt = '.ogg'
 
     SOUNDS['die']    = pygame.mixer.Sound('assets/audio/die' + soundExt)
-    SOUNDS['hit']    = pygame.mixer.Sound('assets/audio/hit' + soundExt)
+    SOUNDS['hit']    = pygame.mixer.Sound('assets/audio/oof' + soundExt)
     SOUNDS['point']  = pygame.mixer.Sound('assets/audio/point' + soundExt)
     SOUNDS['swoosh'] = pygame.mixer.Sound('assets/audio/swoosh' + soundExt)
     SOUNDS['wing']   = pygame.mixer.Sound('assets/audio/wing' + soundExt)
@@ -62,7 +61,6 @@ def load():
         pygame.image.load(PLAYER_PATH[1]).convert_alpha(),
         pygame.image.load(PLAYER_PATH[2]).convert_alpha(),
         pygame.image.load(PLAYER_PATH[3]).convert_alpha(),
-        pygame.image.load(PLAYER_PATH[4]).convert_alpha(),
     )
 
     # select random pipe sprites

@@ -15,7 +15,7 @@ from collections import deque
 GAME = 'Space' # the name of the game being played for log files
 ACTIONS = 4 # number of valid actions
 GAMMA = 0.99 # decay rate of past observations
-OBSERVE = 100. # timesteps to observe before training
+OBSERVE = 1000. # timesteps to observe before training
 EXPLORE = 2000000. # frames over which to anneal epsilon
 FINAL_EPSILON = 0.0001 # final value of epsilon
 INITIAL_EPSILON = 0.1 # starting value of epsilon
@@ -121,6 +121,7 @@ def trainNetwork(s, readout, h_fc1, sess):
     epsilon = INITIAL_EPSILON
     t = 0
     while "flappy bird" != "angry bird":
+        t+=1
         train_loop(D, a, epsilon, game_state, readout, s, s_t, saver, sess, t, train_step, y)
 
 
@@ -143,7 +144,7 @@ def train_loop(D, a, epsilon, game_state, readout, s, s_t, saver, sess, t, train
 
             else:
                 a_t[0] = 1 # BREAKS
-            print(f"State: {a_t} | Readout: {readout_t}")
+            # print(f"State: {a_t} | Readout: {readout_t}")
     #         action_index = np.argmax(readout_t)
     # a_t[action_index] = 1
     # if action_index == 1:
@@ -207,7 +208,7 @@ def train_loop(D, a, epsilon, game_state, readout, s, s_t, saver, sess, t, train
     else:
         state = "train"
     print("TIMESTEP", t, "/ STATE", state,
-          "/ EPSILON", epsilon, "/ ACTION", action_index, "/ REWARD", r_t,
+          "/ EPSILON", epsilon, "/ ACTION", a_t, "/ REWARD", r_t,
           "/ Q_MAX %e" % np.max(readout_t))
 
 

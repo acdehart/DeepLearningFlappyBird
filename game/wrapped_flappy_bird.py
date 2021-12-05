@@ -63,7 +63,7 @@ class GameState:
         pygame.event.pump()
 
         # print(f"***Pipe {SCREENHEIGHT}, player {self.playery}, dif = {PIPE_HEIGHT-self.playery}")
-        reward = 0.1/abs(-SCREENHEIGHT/2-self.playery)
+        reward = 50/abs(-SCREENHEIGHT/2-self.playery)
         terminal = False
 
         # input_actions[0] == 1: do nothing

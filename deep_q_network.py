@@ -136,8 +136,11 @@ def trainNetwork(s, readout, h_fc1, sess):
             else:
                 action_index = np.argmax(readout_t)
                 a_t[action_index] = 1
+                if action_index == 1:
+                    a_t[1] = random.random()*2 - 1
+            print(f"Look: {action_index}, {a_t}")
         else:
-            a_t[0] = 1 # do nothing
+            a_t[0] = 1  # do nothing
 
         # scale down epsilon
         if epsilon > FINAL_EPSILON and t > OBSERVE:

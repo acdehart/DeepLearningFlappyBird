@@ -52,9 +52,9 @@ class GameState:
         self.pipeVelX = -4
         self.playerVelY    =  0    # player's velocity along Y, default same as playerFlapped
         self.playerMaxVelY =  10   # max vel along Y, max descend speed
-        self.playerMinVelY =  -8   # min vel along Y, max ascend speed
-        self.playerAccY    =   1   # players downward accleration
-        self.playerFlapAcc =  -9   # players speed on flapping
+        self.playerMinVelY =  -10   # min vel along Y, max ascend speed
+        self.playerAccY    =   0   # players downward accleration
+        self.playerFlapAcc =  -1   # players speed on flapping
         self.playerFlapped = False # True when player flaps
 
     def frame_step(self, input_actions):
@@ -63,16 +63,14 @@ class GameState:
         reward = 0.1
         terminal = False
 
-        if sum(input_actions) != 1:
-            raise ValueError('Multiple input actions!')
-
         # input_actions[0] == 1: do nothing
-        # input_actions[1] == 1: flap the bird
-        if input_actions[1] == 1:
-            if self.playery > -2 * PLAYER_HEIGHT:
-                self.playerVelY = self.playerFlapAcc
-                self.playerFlapped = True
-                #SOUNDS['wing'].play()
+        # input_actions[1] == x: orb acceleration direction and magnitude [-1, 1]
+        print(f"input actions 1 : {input_actions[1]}")
+        if input_actions[1] != 0:
+            # if self.playery > -2 * PLAYER_HEIGHT:
+            self.playerVelY = self.playerFlapAcc * input_actions[1]
+            self.playerFlapped = True
+            #SOUNDS['wing'].play()
 
         # check for score
         playerMidPos = self.playerx + PLAYER_WIDTH / 2
@@ -91,7 +89,9 @@ class GameState:
 
         # player's movement
         if self.playerVelY < self.playerMaxVelY and not self.playerFlapped:
-            self.playerVelY += self.playerAccY
+            # self.playerVelY += self.playerAccY
+            # print(f"Acceleration {acceleration} | pipe1 {self.upperPipes[0]['y']} | pipe2 {self.lowerPipes[0]['y']} | burb {self.playery}\n")
+            self.playerVelY += self.playerFlapAcc
         if self.playerFlapped:
             self.playerFlapped = False
         self.playery += min(self.playerVelY, BASEY - self.playery - PLAYER_HEIGHT)
@@ -143,6 +143,7 @@ class GameState:
         FPSCLOCK.tick(FPS)
         #print self.upperPipes[0]['y'] + PIPE_HEIGHT - int(BASEY * 0.2)
         return image_data, reward, terminal
+
 
 def getRandomPipe():
     """returns a randomly generated pipe"""
@@ -207,6 +208,7 @@ def checkCrash(player, upperPipes, lowerPipes):
                 return True
 
     return False
+
 
 def pixelCollision(rect1, rect2, hitmask1, hitmask2):
     """Checks if two objects collide and not just their rects"""

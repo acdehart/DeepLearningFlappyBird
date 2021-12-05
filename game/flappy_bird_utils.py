@@ -2,10 +2,17 @@ import pygame
 import sys
 def load():
     # path of player with different states
+    # PLAYER_PATH = (
+    #         'assets/sprites/redbird-upflap.png',
+    #         'assets/sprites/redbird-midflap.png',
+    #         'assets/sprites/redbird-downflap.png'
+    # )
     PLAYER_PATH = (
-            'assets/sprites/redbird-upflap.png',
-            'assets/sprites/redbird-midflap.png',
-            'assets/sprites/redbird-downflap.png'
+            'assets/sprites/ball/1.png',
+            'assets/sprites/ball/2.png',
+            'assets/sprites/ball/3.png',
+            'assets/sprites/ball/4.png',
+            'assets/sprites/ball/5.png',
     )
 
     # path of background
@@ -53,6 +60,8 @@ def load():
         pygame.image.load(PLAYER_PATH[0]).convert_alpha(),
         pygame.image.load(PLAYER_PATH[1]).convert_alpha(),
         pygame.image.load(PLAYER_PATH[2]).convert_alpha(),
+        pygame.image.load(PLAYER_PATH[3]).convert_alpha(),
+        pygame.image.load(PLAYER_PATH[4]).convert_alpha(),
     )
 
     # select random pipe sprites

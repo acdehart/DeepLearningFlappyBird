@@ -126,7 +126,6 @@ def trainNetwork(s, readout, h_fc1, sess):
     while "flappy bird" != "angry bird":
         # choose an action epsilon greedily
         readout_t = readout.eval(feed_dict={s : [s_t]})[0]
-        print(f"State: {s} | Readout: {readout_t}")
         a_t = np.zeros([ACTIONS])
         action_index = 0
         if t % FRAME_PER_ACTION == 0:
@@ -135,10 +134,17 @@ def trainNetwork(s, readout, h_fc1, sess):
                 action_index = random.randrange(ACTIONS)
                 a_t[random.randrange(ACTIONS)] = 1
             else:
-                action_index = np.argmax(readout_t)
-                a_t[action_index] = 1
-                if action_index == 1:
-                    a_t[1] = random.random()*2 - 1
+                if readout_t[0] < 0:
+                    a_t[0] = 0
+                else:
+                    a_t[0] = 1
+                if a_t[0] == 0:
+                    a_t[1] = readout_t[1]*100
+        # print(f"State: {s} | Readout: {readout_t}")
+        #         action_index = np.argmax(readout_t)
+                # a_t[action_index] = 1
+                # if action_index == 1:
+                #     a_t[1] = random.random()*2 - 1
         else:
             a_t[0] = 1  # do nothing
 

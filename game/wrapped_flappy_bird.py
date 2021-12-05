@@ -18,7 +18,7 @@ pygame.display.set_caption('Flappy Bird')
 
 IMAGES, SOUNDS, HITMASKS = flappy_bird_utils.load()
 PIPEGAPSIZE = 100 # gap between upper and lower part of pipe
-BASEY = SCREENHEIGHT * 0.79
+BASEY = SCREENHEIGHT
 
 PLAYER_WIDTH = IMAGES['player'][0].get_width()
 PLAYER_HEIGHT = IMAGES['player'][0].get_height()
@@ -33,7 +33,7 @@ class GameState:
     def __init__(self):
         self.score = self.playerIndex = self.loopIter = 0
         self.playerx = int(SCREENWIDTH * 0.2)
-        self.playery = int((SCREENHEIGHT - PLAYER_HEIGHT) / 2)
+        self.playery = int((SCREENHEIGHT - PLAYER_HEIGHT) / 2 )
         self.basex = 0
         self.baseShift = IMAGES['base'].get_width() - BACKGROUND_WIDTH
 
@@ -65,7 +65,7 @@ class GameState:
 
         # input_actions[0] == 1: do nothing
         # input_actions[1] == x: orb acceleration direction and magnitude [-1, 1]
-        print(f"input actions 1 : {input_actions[1]}")
+        print(f"input actions : {input_actions}")
         if input_actions[1] != 0:
             # if self.playery > -2 * PLAYER_HEIGHT:
             self.playerVelY = self.playerFlapAcc * input_actions[1]

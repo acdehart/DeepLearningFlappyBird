@@ -4,7 +4,7 @@ import flappy_bird_utils
 from itertools import cycle
 
 FPS = 30
-SCREENWIDTH  = 288
+SCREENWIDTH  = 400
 SCREENHEIGHT = 420
 
 VOLUME = 0.02
@@ -14,8 +14,8 @@ FPSCLOCK = pygame.time.Clock()
 SCREEN = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
 pygame.display.set_caption('')
 
-IMAGES, SOUNDS, HITMASKS = flappy_bird_utils.load()
-PIPEGAPSIZE = 120  # gap between upper and lower part of pipe
+IMAGES, SOUNDS, HITMASKS = flappy_bird_utils.load(SCREENWIDTH)
+PIPEGAPSIZE = 100  # gap between upper and lower part of pipe
 BASEY = SCREENHEIGHT
 
 PLAYER_WIDTH = IMAGES['player'][0].get_width()

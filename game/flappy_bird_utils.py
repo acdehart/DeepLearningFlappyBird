@@ -1,6 +1,6 @@
 import pygame
 import sys
-def load():
+def load(screenwidth):
     # path of player with different states
     # PLAYER_PATH = (
     #         'assets/sprites/redbird-upflap.png',
@@ -20,7 +20,7 @@ def load():
     )
 
     # path of background
-    BACKGROUND_PATH = 'assets/sprites/background-black.png'
+    BACKGROUND_PATH = f'assets/sprites/background-black-{screenwidth}.png'
 
     # path of pipe
     # PIPE_PATH = 'assets/sprites/asteroid_big.png'
@@ -59,6 +59,7 @@ def load():
 
     # select random background sprites
     IMAGES['background'] = pygame.image.load(BACKGROUND_PATH).convert()
+
 
     # select random player sprites
     IMAGES['player'] = (

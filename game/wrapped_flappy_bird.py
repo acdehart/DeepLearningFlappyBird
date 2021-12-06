@@ -70,7 +70,7 @@ class GameState:
         # input_actions[1] == x: orb acceleration direction and magnitude [-1, 1]
         if input_actions[0] == 0:  # Brakes off
             # if self.playery > -2 * PLAYER_HEIGHT:
-            self.playerVelY = self.playerFlapAcc * input_actions[1]
+            self.playerVelY = 10*self.playerFlapAcc * input_actions[1]
             self.playerVelX = self.playerFlapAcc * input_actions[2]
             if input_actions[3] < 0:
                 self.player_color_offset = True
@@ -82,6 +82,7 @@ class GameState:
             # DRAG
             self.drag_linear()
             # self.drag_quadratic()
+
 
         # check for score
         playerMidPos = self.playerx + PLAYER_WIDTH / 2
@@ -172,16 +173,19 @@ class GameState:
         return offset
 
     def drag_linear(self):
-        coef = 0.01
+        coef = 0.3
         self.playerVelY += -coef*self.playerVelY
-        self.playerVelX -= -coef*self.playerVelX
+        self.playerVelX += -coef*self.playerVelX
 
     def drag_quadratic(self):
-        density = .000001
+        density = 1
         area = 1
         drag_coef = 1
-        self.playerVelY += (1 / 2) * density * area * drag_coef * self.playerVelY ** 2
-        self.playerVelX -= (1 / 2) * density * area * drag_coef * self.playerVelX ** 2
+        if self.playerVelY >= 0:
+            self.playerVelY -= (1 / 2) * density * area * drag_coef * self.playerVelY ** 2
+        else:
+            self.playerVelY += (1 / 2) * density * area * drag_coef * self.playerVelY ** 2
+        # self.playerVelX -= (1 / 2) * density * area * drag_coef * self.playerVelX ** 2
 
     def checkCrash(self, player, upperPipes, lowerPipes):
         """returns True if player collders with base or pipes."""

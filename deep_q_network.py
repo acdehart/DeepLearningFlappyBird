@@ -15,7 +15,7 @@ from collections import deque
 GAME = 'Space' # the name of the game being played for log files
 ACTIONS = 4 # number of valid actions
 GAMMA = 0.99 # decay rate of past observations
-OBSERVE = 1000. # timesteps to observe before training
+OBSERVE = 10000. # timesteps to observe before training
 EXPLORE = 2000000. # frames over which to anneal epsilon
 FINAL_EPSILON = 0.0001 # final value of epsilon
 INITIAL_EPSILON = 0.1 # starting value of epsilon
@@ -73,7 +73,7 @@ def createNetwork():
 
     h_conv3_flat = tf.reshape(h_conv3, [-1, 5*5*64])
 
-    h_fc1 = tf.nn.elu(tf.matmul(h_conv3_flat, W_fc1) + b_fc1)
+    h_fc1 = tf.nn.softmax(tf.matmul(h_conv3_flat, W_fc1) + b_fc1)
 
     # readout layer
     readout = tf.matmul(h_fc1, W_fc2) + b_fc2
@@ -207,9 +207,9 @@ def train_loop(D, a, epsilon, game_state, readout, s, s_t, saver, sess, t, train
         state = "explore"
     else:
         state = "train"
-    print("TIMESTEP", t, "/ STATE", state,
-          "/ EPSILON", epsilon, "/ ACTION", a_t, "/ REWARD", r_t,
-          "/ Q_MAX %e" % np.max(readout_t))
+    # print("TIMESTEP", t, "/ STATE", state,
+    #       "/ EPSILON", epsilon, "/ ACTION", a_t, "/ REWARD", r_t,
+    #       "/ Q_MAX %e" % np.max(readout_t))
 
 
 def playGame():
